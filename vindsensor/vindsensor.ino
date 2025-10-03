@@ -1,6 +1,9 @@
 const float VREF = 1.10;   // INTERNAL reference
-const float DIV_RATIO = 2.0; // Change depending on voltage divider
+const float R1 = 9.97;   // Resistor in kOhm
+const float R2 = 9.96;   // Resistor in kOhm (Analog input over this)
+const float DIV_RATIO = (R1 + R2) / R2; // ratio between analog input and sensor voltage
 int raw;
+
 
 void setup() {
   Serial.begin(9600);
@@ -22,13 +25,13 @@ void loop() {
 // Factor: 0.1 / 0.00494 ~ 20.25
 // Formula: wind_speed = (v_in - 0.4) * 20.25
   float wind_speed = (v_in - 0.4) * 20.25; 
-
-
-
+  if (wind_speed < 0) {
+    wind_speed = 0;
+  }
 //  Serial.print("raw: "); Serial.print(raw);
 //  Serial.print("  Vadc: "); Serial.print(v_adc, 4);
 //  Serial.print("  Vin: "); Serial.print(v_in, 4);
   Serial.print("  Wind speed: "); Serial.print(wind_speed, 1); Serial.println(" m/s");
 
-  delay(1000);
+  delay(100); //read data every 100 ms
 }
